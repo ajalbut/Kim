@@ -22,6 +22,9 @@ public class UserGlobalsAndPanelFactory extends AbstractReLogoGlobalsAndPanelFac
 		 // State change button with label (method name in observer, label)
 		 addStateChangeButtonWL("changeSomething","Change Something")
 		 */
+		addChooserWL("supplyRule", "Supply Rule", ["BACKORDER","TRUST"], 0)
+		addStateChangeButtonWL("toggleTrustVisibility","Toggle Trust visibility")
+		
 		addMonitor("getFactory0Stock", 1)
 		addMonitor("getDistributor0Stock", 1)
 		addMonitor("getWholesaler0Stock", 1)

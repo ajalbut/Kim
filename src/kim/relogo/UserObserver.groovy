@@ -26,6 +26,7 @@ class UserObserver extends ReLogoObserver{
 		def wholesalers = wholesalers()
 		def retailers = retailers()
 		def customers = customers()
+		
 		ask(factories[0]){ setup(-12, 12, 40.0) }
 		ask(factories[1]){ setup(0, 12, 20.0) }
 		ask(factories[2]){ setup(12, 12, 0.0) }
@@ -38,25 +39,41 @@ class UserObserver extends ReLogoObserver{
 		ask(retailers[0]){ setup(-12, -6, 40.0) }
 		ask(retailers[1]){ setup(0, -6, 20.0) }
 		ask(retailers[2]){ setup(12, -6, 0.0) }
-		ask(customers[0]) {setup(-12, -12, 0.0)}
-		ask(customers[1]) {setup(0, -12, 0.0)}
-		ask(customers[2]) {setup(12, -12, 0.0)}
-
+		ask(customers[0]) { setup(-12, -12, 0.0) }
+		ask(customers[1]) { setup(0, -12, 0.0) }
+		ask(customers[2]) { setup(12, -12, 0.0) }
 	}
 
+	def visibility = 'upstream'
+	
 	@Go
 	def go(){
+		def rule = supplyRule
+		
 		tick()
 		ask(chainLevels()){
+			setSupplyRule(rule)
 			receiveShipments()
 			receiveOrders()
 			updateTrust()
 			fulfillOrders()
 			makeOrders()
+			refreshTrustLinks(visibility)
 		}
 		ask(chainLevels()){ updateState() }
 	}
 
+	def toggleTrustVisibility(){
+		if (visibility == 'upstream') {
+			visibility = 'downstream'
+		} else {
+			visibility = 'upstream'
+		}
+		ask(chainLevels()) {
+			refreshTrustLinks(visibility)
+		}
+	}
+	
 	def getFactory0Stock(){
 		return factories()[0].currentStock
 	}
