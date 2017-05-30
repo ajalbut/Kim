@@ -74,6 +74,15 @@ class UserObserver extends ReLogoObserver{
 		}
 	}
 	
+	def getGlobalUtility() {
+		def stepUtility = 0
+		ask(factories()){ stepUtility += 0.5 * currentStock + lastOrdersToFulfill.values().sum()}
+		ask(distributors()){ stepUtility += 0.5 * currentStock + lastOrdersToFulfill.values().sum()}
+		ask(wholesalers()){ stepUtility += 0.5 * currentStock + lastOrdersToFulfill.values().sum()}
+		ask(retailers()){ stepUtility += 0.5 * currentStock + lastOrdersToFulfill.values().sum()}
+		return stepUtility
+	}
+	
 	def getFactory0Stock(){
 		return factories()[0].currentStock
 	}
