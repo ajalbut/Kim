@@ -25,6 +25,8 @@ public class UserGlobalsAndPanelFactory extends AbstractReLogoGlobalsAndPanelFac
 		addChooserWL("supplyRule", "Supply Rule", ["BACKORDER","TRUST"], 0)
 		addStateChangeButtonWL("toggleTrustVisibility","Toggle Trust visibility")
 		
+		addMonitor("getGlobalUtility", 1)
+		
 		addMonitor("getFactory0Stock", 1)
 		addMonitor("getDistributor0Stock", 1)
 		addMonitor("getWholesaler0Stock", 1)
