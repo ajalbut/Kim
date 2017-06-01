@@ -24,15 +24,12 @@ class Customer extends ChainLevel {
 	def fullfillOrders(){}
 
 	def makeOrders(){
-		for (ChainLevel upstream in this.upstreamLevel) {
-			def orderSent
-			if (ticks() >= 4) {
-				orderSent = 8.0
-			} else {
-				orderSent = 4.0
-			}
-			this.ordersSent[upstream.getWho()] = orderSent
-			this.ordersSentChecklist[upstream.getWho()].add(0, orderSent)
+		def totalOrderSize
+		if (ticks() >= 4) {
+			totalOrderSize = 24.0
+		} else {
+			totalOrderSize = 12.0
 		}
+		this.distributeOrdersToSend(totalOrderSize)
 	}
 }

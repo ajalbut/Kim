@@ -25,4 +25,9 @@ class Factory extends ChainLevel {
 		this.productPipelines[this.getWho()].add(0, this.lastOrdersSent[this.getWho()])
 		this.currentStock += this.productPipelines[this.getWho()].pop()
 	}
+
+	def makeOrders(){
+		def totalOrderSize = this.calculateTotalOrderSize()
+		this.ordersSent[this.getWho()] = totalOrderSize
+	}
 }

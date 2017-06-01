@@ -26,7 +26,7 @@ class UserObserver extends ReLogoObserver{
 		def wholesalers = wholesalers()
 		def retailers = retailers()
 		def customers = customers()
-		
+
 		ask(factories[0]){ setup(-12, 12, 40.0) }
 		ask(factories[1]){ setup(0, 12, 20.0) }
 		ask(factories[2]){ setup(12, 12, 0.0) }
@@ -45,11 +45,11 @@ class UserObserver extends ReLogoObserver{
 	}
 
 	def visibility = 'upstream'
-	
+
 	@Go
 	def go(){
 		def rule = supplyRule
-		
+
 		tick()
 		ask(chainLevels()){
 			setSupplyRule(rule)
@@ -69,11 +69,9 @@ class UserObserver extends ReLogoObserver{
 		} else {
 			visibility = 'upstream'
 		}
-		ask(chainLevels()) {
-			refreshTrustLinks(visibility)
-		}
+		ask(chainLevels()) { refreshTrustLinks(visibility) }
 	}
-	
+
 	def getGlobalUtility() {
 		def stepUtility = 0
 		ask(factories()){ stepUtility += 0.5 * currentStock + lastOrdersToFulfill.values().sum()}
@@ -82,7 +80,7 @@ class UserObserver extends ReLogoObserver{
 		ask(retailers()){ stepUtility += 0.5 * currentStock + lastOrdersToFulfill.values().sum()}
 		return stepUtility
 	}
-	
+
 	def getFactory0Stock(){
 		return factories()[0].currentStock
 	}
