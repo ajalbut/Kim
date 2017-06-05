@@ -45,12 +45,12 @@ class ChainLevel extends ReLogoTurtle {
 	def upstreamLevel
 	def downstreamLevel
 
-	def initialProductPipeline = []
-	def initialOrderPipeline = [4.0]
-	def initialOrdersSentChecklist = [4.0, 4.0, 4.0, 4.0, 4.0]
-	def initialShipmentsReceivedChecklist = [4.0, 4.0, 4.0]
-	def initialShipmentsSentChecklist = [4.0, 4.0, 4.0, 4.0, 4.0]
-	def initialOrdersReceivedChecklist = [4.0, 4.0]
+	def initialProductPipeline = [4.0]
+	def initialOrderPipeline = []
+	def initialOrdersSentChecklist = [4.0, 4.0, 4.0]
+	def initialShipmentsReceivedChecklist = [4.0, 4.0]
+	def initialShipmentsSentChecklist = [4.0, 4.0, 4.0]
+	def initialOrdersReceivedChecklist = [4.0]
 
 	def setup(x, y, initialStock){
 		setxy(x,y)
@@ -114,7 +114,7 @@ class ChainLevel extends ReLogoTurtle {
 				shipmentSent = totalTrustDownstreams ? totalShipmentsSent * this.trustDownstreams[downstream.getWho()] / totalTrustDownstreams : 0.0
 			}
 			this.currentStock -= shipmentSent
-			this.ordersToFulfill[downstream.getWho()] -= shipmentSent
+			this.ordersToFulfill[downstream.getWho()] = Math.max(0.0, this.ordersToFulfill[downstream.getWho()] - shipmentSent)
 			this.shipmentsSent[downstream.getWho()] = shipmentSent
 			this.shipmentsSentChecklist[downstream.getWho()].add(0, shipmentSent)
 		}
@@ -131,7 +131,7 @@ class ChainLevel extends ReLogoTurtle {
 			supplyLine += this.productPipelines[upstream.getWho()].sum()
 			if(upstream.getWho() != this.getWho()) {
 				supplyLine += upstream.lastOrdersToFulfill[this.getWho()]
-				supplyLine += upstream.lastOrderPipelines[this.getWho()].sum()
+				//supplyLine += upstream.lastOrderPipelines[this.getWho()].sum()
 			}
 		}
 
@@ -178,7 +178,7 @@ class ChainLevel extends ReLogoTurtle {
 		for (ChainLevel upstream in this.upstreamLevel) {
 			if(upstream.getWho() != this.getWho()) {
 				def orderToCheck = this.ordersSentChecklist[upstream.getWho()].pop()
-				def shipmentReceived = this.shipmentsReceivedChecklist[upstream.getWho()][3]
+				def shipmentReceived = this.shipmentsReceivedChecklist[upstream.getWho()].pop()
 				def newEvaluation
 				def updatedTrust = 0.0
 				if (shipmentReceived >= orderToCheck) {
@@ -204,7 +204,7 @@ class ChainLevel extends ReLogoTurtle {
 		def maxTrustDownstreams = 0.0
 		for (ChainLevel downstream in this.downstreamLevel) {
 			def shipmentToCheck = this.shipmentsSentChecklist[downstream.getWho()].pop()
-			def orderReceived = this.ordersReceivedChecklist[downstream.getWho()][2]
+			def orderReceived = this.ordersReceivedChecklist[downstream.getWho()].pop()
 			def newEvaluation
 			def updatedTrust = 0.0
 			if (orderReceived >= shipmentToCheck) {
@@ -227,14 +227,10 @@ class ChainLevel extends ReLogoTurtle {
 
 	def updateState(){
 		for (ChainLevel upstream in this.upstreamLevel) {
-			if(upstream.getWho() != this.getWho()) {
-				this.shipmentsReceivedChecklist[upstream.getWho()].pop()
-			}
 			this.lastOrdersSent[upstream.getWho()] = this.ordersSent[upstream.getWho()]
 			this.lastProductPipelines[upstream.getWho()] = this.productPipelines[upstream.getWho()].clone()
 		}
 		for (ChainLevel downstream in this.downstreamLevel) {
-			this.ordersReceivedChecklist[downstream.getWho()].pop()
 			this.lastOrdersToFulfill[downstream.getWho()] = this.ordersToFulfill[downstream.getWho()]
 			this.lastShipmentsSent[downstream.getWho()] = this.shipmentsSent[downstream.getWho()]
 			this.lastOrderPipelines[downstream.getWho()] = this.orderPipelines[downstream.getWho()].clone()
@@ -243,8 +239,16 @@ class ChainLevel extends ReLogoTurtle {
 		label = "" + round(100 * this.currentStock) / 100
 		def totalOrdersToFullfill = this.ordersToFulfill.values().sum()
 		if (totalOrdersToFullfill) {
-			label += " , " + round(totalOrdersToFullfill) / 100
+			label += " , " + round(100 * totalOrdersToFullfill) / 100
 		}
+	}
+
+	def getStockMinusBackorder() {
+		def stockMinusBackorder = this.currentStock
+		if (this.lastOrdersToFulfill.values().size()) {
+			stockMinusBackorder -= this.lastOrdersToFulfill.values().sum()
+		}
+		return stockMinusBackorder
 	}
 
 	def getCurrentTrustFromUpstreams() {

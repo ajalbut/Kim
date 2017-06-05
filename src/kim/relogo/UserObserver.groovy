@@ -82,51 +82,51 @@ class UserObserver extends ReLogoObserver{
 	}
 
 	def getFactory0Stock(){
-		return factories()[0].currentStock
+		return factories()[0].getStockMinusBackorder()
 	}
 
 	def getDistributor0Stock(){
-		return distributors()[0].currentStock
+		return distributors()[0].getStockMinusBackorder()
 	}
 
 	def getWholesaler0Stock(){
-		return wholesalers()[0].currentStock
+		return wholesalers()[0].getStockMinusBackorder()
 	}
 
 	def getRetailer0Stock(){
-		return retailers()[0].currentStock
+		return retailers()[0].getStockMinusBackorder()
 	}
 
 	def getFactory1Stock(){
-		return factories()[1].currentStock
+		return factories()[1].getStockMinusBackorder()
 	}
 
 	def getDistributor1Stock(){
-		return distributors()[1].currentStock
+		return distributors()[1].getStockMinusBackorder()
 	}
 
 	def getWholesaler1Stock(){
-		return wholesalers()[1].currentStock
+		return wholesalers()[1].getStockMinusBackorder()
 	}
 
 	def getRetailer1Stock(){
-		return retailers()[1].currentStock
+		return retailers()[1].getStockMinusBackorder()
 	}
 
 	def getFactory2Stock(){
-		return factories()[2].currentStock
+		return factories()[2].getStockMinusBackorder()
 	}
 
 	def getDistributor2Stock(){
-		return distributors()[2].currentStock
+		return distributors()[2].getStockMinusBackorder()
 	}
 
 	def getWholesaler2Stock(){
-		return wholesalers()[2].currentStock
+		return wholesalers()[2].getStockMinusBackorder()
 	}
 
 	def getRetailer2Stock(){
-		return retailers()[2].currentStock
+		return retailers()[2].getStockMinusBackorder()
 	}
 
 	def getDistributor0TrustFromUpstreams(){
