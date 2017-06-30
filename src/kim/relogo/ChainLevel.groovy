@@ -18,7 +18,7 @@ class ChainLevel extends ReLogoTurtle {
 	static THETA = 0.5
 
 	def supplyRule
-	def desiredStock = 20.0
+	def desiredStock = 0.0
 	def currentStock
 	def expectedDemand
 
